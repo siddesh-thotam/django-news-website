@@ -1,0 +1,294 @@
+<!-- Category Filter Bar (Mobile) -->
+    <div class="container d-md-none mb-4">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ current_category|title }} News
+            </button>
+            <ul class="dropdown-menu w-100" aria-labelledby="categoryDropdown">
+                {% for cat in categories %}
+                <li><a class="dropdown-item {% if current_category == cat %}active{% endif %}" href="?category={{ cat }}">{{ cat|title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>International Brief - Latest News</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #003366;
+            --secondary-color: #f5f5f7;
+            --text-color: #1d1d1f;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            color: white !important;
+        }
+        
+        .news-header {
+            background: linear-gradient(135deg, #003366, #0066cc);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .news-header h1 {
+            font-weight: 700;
+            font-size: 3rem;
+        }
+        
+        .news-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .card-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-text {
+            color: #515154;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .read-more {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .footer {
+            background-color: #f5f5f7;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+        
+        .footer-text {
+            color: #86868b;
+            font-size: 0.9rem;
+        }
+        
+        .no-news {
+            text-align: center;
+            padding: 5rem 0;
+        }
+        
+        .no-news i {
+            font-size: 5rem;
+            color: #d2d2d7;
+            margin-bottom: 1rem;
+        }
+        
+        .alert {
+            border-radius: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .news-header h1 {
+                font-size: 2rem;
+            }
+            
+            .news-header p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-globe me-2"></i>International Brief
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item {% if current_category == 'general' %}active{% endif %}">
+                        <a class="nav-link" href="?category=general">General</a>
+                    </li>
+                    <li class="nav-item {% if current_category == 'business' %}active{% endif %}">
+                        <a class="nav-link" href="?category=business">Business</a>
+                    </li>
+                    <li class="nav-item {% if current_category == 'technology' %}active{% endif %}">
+                        <a class="nav-link" href="?category=technology">Technology</a>
+                    </li>
+                    <li class="nav-item {% if current_category == 'health' %}active{% endif %}">
+                        <a class="nav-link" href="?category=health">Health</a>
+                    </li>
+                    <li class="nav-item {% if current_category == 'science' %}active{% endif %}">
+                        <a class="nav-link" href="?category=science">Science</a>
+                    </li>
+                    <li class="nav-item {% if current_category == 'sports' %}active{% endif %}">
+                        <a class="nav-link" href="?category=sports">Sports</a>
+                    </li>
+                    <li class="nav-item {% if current_category == 'entertainment' %}active{% endif %}">
+                        <a class="nav-link" href="?category=entertainment">Entertainment</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">{{ user.username }}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                        </li>
+                         {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register' %}">Register</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="news-header">
+        <div class="container text-center">
+            <h1>International Brief</h1>
+            <p class="lead">Stay informed with the latest headlines and breaking news from around the world.</p>
+            <p class="small text-white-50">
+                {% if current_category != 'general' %}
+                    Showing: <span class="fw-bold text-uppercase">{{ current_category }}</span> news | 
+                {% endif %}
+                Updated: {% now "F j, Y" %}
+            </p>
+        </div>
+    </header>
+
+    <!-- News Content -->
+    <!-- Category Filter Bar (Mobile) -->
+    <div class="container d-md-none mb-4 mt-4">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ current_category|title }} News
+            </button>
+            <ul class="dropdown-menu w-100" aria-labelledby="categoryDropdown">
+                {% for cat in categories %}
+                <li><a class="dropdown-item {% if current_category == cat %}active{% endif %}" href="?category={{ cat }}">{{ cat|title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    
+    <main class="container">
+        <!-- Error handling -->
+        {% if not success %}
+            <div class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Error:</strong> {{ error }}
+            </div>
+        {% endif %}
+
+        <div class="row">
+            {% if success and articles %}
+                {% for article in articles %}
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            {% if article.image %}
+                                <img src="{{ article.image }}" class="card-img-top" alt="{{ article.title }}" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x200?text=No+Image+Available';">
+                            {% else %}
+                                <div class="bg-light text-center py-5">
+                                    <i class="fas fa-newspaper fs-1 text-secondary"></i>
+                                </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ article.title }}</h5>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <small class="text-muted">{{ article.source }}</small>
+                                    {% if article.published_at %}
+                                        <small class="text-muted">{{ article.published_at|slice:"0:10" }}</small>
+                                    {% endif %}
+                                </div>
+                                <p class="card-text">{{ article.description }}</p>
+                                <a href="{{ article.url }}" class="read-more text-decoration-none" target="_blank">Read more <i class="fas fa-arrow-right ms-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 no-news">
+                    <i class="fas fa-newspaper"></i>
+                    <h3>No news articles available</h3>
+                    <p>Please check back later for the latest headlines.</p>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="footer-text">
+                        &copy; {% now "Y" %} International Brief. All rights reserved.
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="footer-text">
+                        Powered by News API | <a href="#" class="text-decoration-none">Privacy Policy</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
