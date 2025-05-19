@@ -2,7 +2,7 @@
 
 The website fetches and displays news headlines using the News API, ensuring users have access to the latest stories updated every hour. It features a clean, mobile-friendly interface designed with Bootstrap, and offers category-based filtering for enhanced user experience.
 
-The site also includes user authentication, allowing registered users to log in and view personalized elements such as their username. Error handling and fallback mechanisms are implemented to ensure seamless content display even when some news items lack images or metadata.
+The site also includes user authentication, allowing registered users to log in and view personalized elements such as their username.
 
 Key Features:
 
