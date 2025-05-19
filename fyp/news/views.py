@@ -8,25 +8,20 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def index(request):
-    # Use current date or a date in the past
-    today = datetime.now()
-    from_date = (today - timedelta(days=30)).strftime('%Y-%m-%d')  # Use news from the last 30 days
     
-    # Get category from request parameters, default to general if not specified
+    today = datetime.now()
+    from_date = (today - timedelta(days=30)).strftime('%Y-%m-%d')  
+    
+    
     category = request.GET.get('category', 'general')
     
-    # List of valid categories for NewsAPI
     valid_categories = ['general', 'business', 'technology', 'health', 'science', 'sports', 'entertainment']
     
-    # Make sure category is valid
     if category not in valid_categories:
         category = 'general'
     
-    # Fix API key format - remove the "API_KEY" prefix
-    api_key = "16d7900e8ffd437ba7628e3b7f7a521c"  # Just the key, without the prefix
-    
-    # Use sources=all to get worldwide news, not just from one country
-    # The category parameter filters by category
+    api_key = "16d7900e8ffd437ba7628e3b7f7a521c"  
+  
     url = f"https://newsapi.org/v2/top-headlines?category={category}&language=en&sortBy=popularity&apiKey={api_key}"
 
     try:
@@ -38,7 +33,7 @@ def index(request):
             
         all_news = response.json()
         
-        # Debug - print API response to console
+       
         print(f"API Response status: {response.status_code}")
         print(f"API Response contains 'articles': {'articles' in all_news}")
         if 'articles' in all_news:
@@ -50,10 +45,8 @@ def index(request):
             
         articles = all_news['articles']
         
-        # Convert articles directly to list of dictionaries - more efficient than separate lists
         processed_articles = []
         for article in articles:
-            # Use get() method with default values to handle missing keys
             processed_articles.append({
                 'title': article.get('title', 'No title available'),
                 'description': article.get('description', 'No description available'),
@@ -81,9 +74,8 @@ def index(request):
             'current_category': category,
             'categories': valid_categories
         }
-        return render(request, 'fyp/index.html', context)  # Use consistent template path
+        return render(request, 'fyp/index.html', context)  
     except KeyError as e:
-        # Handle missing data errors
         print(f"Data Error: {str(e)}")
         context = {
             'success': False,
@@ -91,8 +83,7 @@ def index(request):
             'current_category': category,
             'categories': valid_categories
         }
-        return render(request, 'fyp/index.html', context)  # Use consistent template path
-    except Exception as e:
+        return render(request, 'fyp/index.html', context)  
         # Catch any other unexpected errors
         print(f"Unexpected Error: {str(e)}")
         context = {
@@ -101,7 +92,7 @@ def index(request):
             'current_category': category,
             'categories': valid_categories
         }
-        return render(request, 'fyp/index.html', context)  # Use consistent template path
+        return render(request, 'fyp/index.html', context) 
 
 def landing_page(request):
     """Landing page view with featured news and registration/login buttons"""
