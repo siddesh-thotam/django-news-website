@@ -5,6 +5,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from decouple import config
 
 @login_required
 def index(request):
@@ -20,7 +21,7 @@ def index(request):
     if category not in valid_categories:
         category = 'general'
     
-    api_key = "16d7900e8ffd437ba7628e3b7f7a521c"  
+    api_key = config('NEWS_API_KEY')  
   
     url = f"https://newsapi.org/v2/top-headlines?category={category}&language=en&sortBy=popularity&apiKey={api_key}"
 
