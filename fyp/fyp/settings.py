@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'news',
     'django.contrib.sites',
+    'django_extras',
+    'fyp',
 ]
 
 SITE_ID = 1

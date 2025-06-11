@@ -1,16 +1,4 @@
-<!-- Filter Bar (Mobile) -->
-    <div class="container d-md-none mb-4">
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                {{ current_category|title }} News
-            </button>
-            <ul class="dropdown-menu w-100" aria-labelledby="categoryDropdown">
-                {% for cat in categories %}
-                <li><a class="dropdown-item {% if current_category == cat %}active{% endif %}" href="?category={{ cat }}">{{ cat|title }}</a></li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -61,6 +49,24 @@
         .news-header p {
             font-size: 1.2rem;
             opacity: 0.9;
+        }
+        
+        .filter-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .filter-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .country-dropdown, .category-dropdown {
+            min-width: 200px;
         }
         
         .card {
@@ -132,6 +138,28 @@
             border-radius: 15px;
         }
         
+        .current-filters {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+        
+        .debug-info {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        
+        .debug-info h6 {
+            color: #495057;
+            margin-bottom: 0.5rem;
+        }
+        
         @media (max-width: 768px) {
             .news-header h1 {
                 font-size: 2rem;
@@ -140,6 +168,10 @@
             .news-header p {
                 font-size: 1rem;
             }
+            
+            .filter-section {
+                padding: 1rem;
+            }
         }
     </style>
 </head>
@@ -147,7 +179,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="{% url 'landing' %}">
                 <i class="fas fa-globe me-2"></i>International Brief
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -155,35 +187,17 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item {% if current_category == 'general' %}active{% endif %}">
-                        <a class="nav-link" href="?category=general">General</a>
-                    </li>
-                    <li class="nav-item {% if current_category == 'business' %}active{% endif %}">
-                        <a class="nav-link" href="?category=business">Business</a>
-                    </li>
-                    <li class="nav-item {% if current_category == 'technology' %}active{% endif %}">
-                        <a class="nav-link" href="?category=technology">Technology</a>
-                    </li>
-                    <li class="nav-item {% if current_category == 'health' %}active{% endif %}">
-                        <a class="nav-link" href="?category=health">Health</a>
-                    </li>
-                    <li class="nav-item {% if current_category == 'science' %}active{% endif %}">
-                        <a class="nav-link" href="?category=science">Science</a>
-                    </li>
-                    <li class="nav-item {% if current_category == 'sports' %}active{% endif %}">
-                        <a class="nav-link" href="?category=sports">Sports</a>
-                    </li>
-                    <li class="nav-item {% if current_category == 'entertainment' %}active{% endif %}">
-                        <a class="nav-link" href="?category=entertainment">Entertainment</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'landing' %}">Home</a>
                     </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="#">{{ user.username }}</a>
+                            <a class="nav-link" href="#">Welcome, {{ user.username }}</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                         </li>
-                         {% else %}
+                    {% else %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'login' %}">Login</a>
                         </li>
@@ -202,25 +216,108 @@
             <h1>International Brief</h1>
             <p class="lead">Stay informed with the latest headlines and breaking news from around the world.</p>
             <p class="small text-white-50">
-                {% if current_category != 'general' %}
-                    Showing: <span class="fw-bold text-uppercase">{{ current_category }}</span> news | 
-                {% endif %}
                 Updated: {% now "F j, Y" %}
             </p>
         </div>
     </header>
 
-    <!-- News Content -->
-    <div class="container d-md-none mb-4 mt-4">
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                {{ current_category|title }} News
-            </button>
-            <ul class="dropdown-menu w-100" aria-labelledby="categoryDropdown">
-                {% for cat in categories %}
-                <li><a class="dropdown-item {% if current_category == cat %}active{% endif %}" href="?category={{ cat }}">{{ cat|title }}</a></li>
-                {% endfor %}
-            </ul>
+    <!-- Filter Section -->
+    <div class="container">
+        <div class="filter-section">
+            <h4 class="filter-title">
+                <i class="fas fa-filter me-2"></i>Filter News
+            </h4>
+            
+            <!-- Current Filters Display -->
+            <div class="current-filters">
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong><i class="fas fa-flag me-2"></i>Country:</strong> 
+                        {% for code, name in countries.items %}
+                            {% if current_country == code %}{{ name }}{% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        <strong><i class="fas fa-tags me-2"></i>Category:</strong> {{ current_category|title }}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filter Controls -->
+            <div class="row g-3">
+                <!-- Country Filter -->
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-flag me-2"></i>Select Country:</label>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle country-dropdown w-100" type="button" id="countryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-flag me-2"></i>
+                            {% for code, name in countries.items %}
+                                {% if current_country == code %}{{ name }}{% endif %}
+                            {% endfor %}
+                        </button>
+                        <ul class="dropdown-menu w-100" aria-labelledby="countryDropdown">
+                            {% for code, name in countries.items %}
+                                <li>
+                                    <a class="dropdown-item {% if current_country == code %}active{% endif %}" 
+                                       href="?country={{ code }}&category={{ current_category }}">
+                                        <i class="fas fa-flag me-2"></i>{{ name }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Category Filter -->
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-tags me-2"></i>Select Category:</label>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle category-dropdown w-100" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-tags me-2"></i>{{ current_category|title }}
+                        </button>
+                        <ul class="dropdown-menu w-100" aria-labelledby="categoryDropdown">
+                            {% for cat in categories %}
+                                <li>
+                                    <a class="dropdown-item {% if current_category == cat %}active{% endif %}" 
+                                       href="?country={{ current_country }}&category={{ cat }}">
+                                        <i class="fas fa-tag me-2"></i>{{ cat|title }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Filter Buttons for Mobile -->
+            <div class="d-md-none mt-3">
+                <div class="row g-2">
+                    <div class="col-6">
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
+                                Country
+                            </button>
+                            <ul class="dropdown-menu w-100">
+                                {% for code, name in countries.items %}
+                                    <li><a class="dropdown-item" href="?country={{ code }}&category={{ current_category }}">{{ name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
+                                Category
+                            </button>
+                            <ul class="dropdown-menu w-100">
+                                {% for cat in categories %}
+                                    <li><a class="dropdown-item" href="?country={{ current_country }}&category={{ cat }}">{{ cat|title }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -230,6 +327,30 @@
             <div class="alert alert-danger" role="alert">
                 <i class="fas fa-exclamation-triangle me-2"></i>
                 <strong>Error:</strong> {{ error }}
+            </div>
+        {% endif %}
+
+        <!-- Debug Information (show when no articles but success) -->
+        {% if success and not articles and debug_info %}
+            <div class="debug-info">
+                <h6><i class="fas fa-info-circle me-2"></i>Debug Information</h6>
+                <p><strong>Country:</strong> {{ debug_info.country_name }}</p>
+                <p><strong>Category:</strong> {{ current_category|title }}</p>
+                <p><strong>API Status:</strong> {{ debug_info.api_status }}</p>
+                <p><strong>Total Results from API:</strong> {{ debug_info.total_results }}</p>
+                {% if debug_info.no_articles_reason %}
+                    <p><strong>Reason:</strong> {{ debug_info.no_articles_reason }}</p>
+                {% endif %}
+                <div class="mt-2">
+                    <small class="text-muted">
+                        <strong>Suggestions:</strong>
+                        <ul class="mb-0 mt-1">
+                            <li>Try a different category (General usually has more articles)</li>
+                            <li>Try switching to United States, India, or United Kingdom</li>
+                            <li>Some countries may have limited news coverage in English</li>
+                        </ul>
+                    </small>
+                </div>
             </div>
         {% endif %}
 
@@ -259,11 +380,27 @@
                         </div>
                     </div>
                 {% endfor %}
-            {% else %}
+            {% elif success %}
                 <div class="col-12 no-news">
                     <i class="fas fa-newspaper"></i>
                     <h3>No news articles available</h3>
-                    <p>Please check back later for the latest headlines.</p>
+                    <p>No articles found for {{ debug_info.country_name|default:"the selected country" }} in {{ current_category|title }} category.</p>
+                    
+                    <!-- Suggestions -->
+                    <div class="mt-4">
+                        <h5>Try these popular combinations:</h5>
+                        <div class="row justify-content-center mt-3">
+                            <div class="col-auto">
+                                <a href="?country=us&category=general" class="btn btn-outline-primary">US - General</a>
+                            </div>
+                            <div class="col-auto">
+                                <a href="?country=in&category=technology" class="btn btn-outline-primary">India - Technology</a>
+                            </div>
+                            <div class="col-auto">
+                                <a href="?country=gb&category=business" class="btn btn-outline-primary">UK - Business</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             {% endif %}
         </div>
