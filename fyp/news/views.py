@@ -55,7 +55,7 @@ def fetch_indian_news(request, category, valid_categories, valid_countries):
     """Fetch Indian news using Mediastack API"""
     
     # Mediastack API key
-    MEDIASTACK_API_KEY = "8c1e2f1fb162a63b876db026f93c3519"
+    MEDIASTACK_API_KEY = "Enter Your media stack api key here"
     
     # Map categories to Mediastack categories
     category_mapping = {
@@ -435,6 +435,6 @@ def login_view(request):
     return render(request, 'fyp/login.html', {'form': form})
 
 def logout_view(request):
-    logout(request)
+    logout(request)    
     messages.success(request, "You have been logged out.")
     return redirect('login')
